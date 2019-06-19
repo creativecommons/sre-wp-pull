@@ -1,0 +1,37 @@
+# vim: ft=sshconfig
+#
+# The following are parsed by wp-pull.sh:
+#
+# DEST_URL: stage.creativecommons.net
+# DEST_UPLOADS_DIR: /var/www/chapters/wp-content/uploads
+# DEST_TEMP_DIR: /var/www/chapters
+# DEST_WP_DIR: /var/www/chapters/wp
+# BASTION_HOST_REMOTE: 10.22.10.10
+# SOURCE_HOST_REMOTE: 10.22.10.14
+# SOURCE_URL: creativecommons.net
+# SOURCE_DB_FILE: /var/www/chapters/backup/now/db.sql.gz
+# SOURCE_UPLOADS_FILE: /var/www/chapters/backup/now/uploads.tgz
+
+
+#pushconfig
+Host bastion-us-east-2
+    HostName bastion-us-east-2.creativecommons.org
+
+
+# The wp-pull HostName is the DEST_HOST
+Host wp-pull
+    AddKeysToAgent yes
+    ForwardAgent yes
+    HostName 10.22.10.18
+    ProxyJump bastion-us-east-2
+
+
+Host *
+    ControlMaster auto
+    ControlPath ~/.ssh/wp-pull_%r_%h
+    ControlPersist 5m
+    IdentityFile FILEPATH
+    ServerAliveCountMax 60
+    ServerAliveInterval 30
+    TCPKeepAlive no
+    User USERNAME
