@@ -29,7 +29,7 @@ See [`CONTRIBUTING.md`](CONTRIBUTING.md).
    SaltStack)
    - `wp-config.php` is already setup
    - user is a member of `www-data`
-   - [Wp-CLI][wp-cli] is installed on the destination host
+   - [WP-CLI][wp-cli] is installed on the destination host
 2. WordPress source data was created using
    [/states/wordpress/files/backup_wordpress.sh][backup] found in the
    [creativecommons/sre-salt-prime][salt-prime] repository.
@@ -44,6 +44,7 @@ See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 1. Optionally, run [`backup_wordpress.sh`][backup] on the source host
 2. Clone this repository
 3. Make a copy of one of the appropriate [`config_examples/`](config_examples/)
+   and replace `FILEPATH` and `USERNAME`
 4. Execute script with config file as only argument. For example:
     ```shell
     ./wp-pull.sh chapters__stage
