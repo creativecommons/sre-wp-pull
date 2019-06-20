@@ -25,7 +25,7 @@ Creative Commons Site Reliability Engineering WordPress Data Pull
 
 ## Use
 
-1. Optionally, run [`backup_wordpress.sh`][backup-sh] on the source host
+1. Optionally, run [`backup_wordpress.sh`][backup] on the source host
 2. Clone this repository
 3. Make a copy of one of the appropriate [`config_examples/`](config_examples/)
 4. Execute script with config file as only argument. For example:
