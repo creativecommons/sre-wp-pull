@@ -1,12 +1,13 @@
 #!/bin/bash
 #
-# Creative Commons WordPress Data Pull Remote Script
+# Creative Commons Site Reliability Engineering WordPress Data Pull
+# Remote Script
 #
 # This script is installed and invoked by wp-pull.sh. It should *not* be
 # invoked directly.
 #
 # For additional information, see:
-#   TODO: add link
+#   https://github.com/creativecommons/sre-wp-pull
 set -o errexit
 set -o errtrace
 set -o nounset
