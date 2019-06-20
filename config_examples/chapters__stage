@@ -2,13 +2,13 @@
 #
 # The following are parsed by wp-pull.sh:
 #
-# DEST_URL: stage.creativecommons.net
+# DEST_DOMAIN: stage.creativecommons.net
 # DEST_UPLOADS_DIR: /var/www/chapters/wp-content/uploads
 # DEST_TEMP_DIR: /var/www/chapters
 # DEST_WP_DIR: /var/www/chapters/wp
 # BASTION_HOST_REMOTE: 10.22.10.10
 # SOURCE_HOST_REMOTE: 10.22.10.14
-# SOURCE_URL: creativecommons.net
+# SOURCE_DOMAIN: creativecommons.net
 # SOURCE_DB_FILE: /var/www/chapters/backup/now/db.sql.gz
 # SOURCE_UPLOADS_FILE: /var/www/chapters/backup/now/uploads.tgz
 

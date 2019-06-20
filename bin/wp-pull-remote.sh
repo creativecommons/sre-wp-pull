@@ -38,6 +38,97 @@ create_temp_dir() {
 }
 
 
+db_update_domain_wp_blogs() {
+    headerone 'DEST_HOST: Updating domain in wp_blogs table'
+    pushd ${DEST_WP_DIR} >/dev/null
+    wp db query "
+        SELECT domain AS 'domain__contains__DEST_DOMAIN'
+        FROM wp_blogs
+        WHERE domain LIKE '%${SOURCE_DOMAIN}%';" \
+        | column -t
+    echo
+    wp db query "
+        UPDATE wp_blogs
+        SET domain = REPLACE(domain, '${SOURCE_DOMAIN}', '${DEST_DOMAIN}');"
+    wp db query "
+        SELECT domain AS 'domain__contains__DEST_DOMAIN'
+        FROM wp_blogs
+        WHERE domain LIKE '%${DEST_DOMAIN}%';" \
+        | column -t
+    echo
+    popd >/dev/null
+}
+
+
+db_update_domain_wp_domain_mapping() {
+    headerone 'DEST_HOST: Updating domain in wp_domain_mapping table'
+    pushd ${DEST_WP_DIR} >/dev/null
+    wp db query "
+        SELECT domain AS 'domain__contains__SOURCE_DOMAIN'
+        FROM wp_domain_mapping
+        WHERE domain LIKE '%${SOURCE_DOMAIN}%';" \
+        | column -t
+    echo
+    wp db query "
+        UPDATE wp_domain_mapping
+        SET domain = REPLACE(domain, '${SOURCE_DOMAIN}', '${DEST_DOMAIN}');"
+    wp db query "
+        SELECT domain AS 'domain__contains__DEST_DOMAIN'
+        FROM wp_domain_mapping
+        WHERE domain LIKE '%${DEST_DOMAIN}%';" \
+        | column -t
+    echo
+    popd >/dev/null
+}
+
+
+db_update_domain_wp_options() {
+    headerone 'DEST_HOST: Updating DOMAIN in wp_options table'
+    pushd ${DEST_WP_DIR} >/dev/null
+    wp db query "
+        SELECT option_name, option_value
+        FROM wp_options
+        WHERE option_name IN ('siteurl', 'home');" \
+        | column -t
+    echo
+    wp db query "
+        UPDATE wp_options
+        SET option_value = REPLACE(option_value, '${SOURCE_DOMAIN}',
+                                                 '${DEST_DOMAIN}')
+        WHERE option_name IN ('siteurl', 'home');"
+    wp db query "
+        SELECT option_name, option_value
+        FROM wp_options
+        WHERE option_name IN ('siteurl', 'home');" \
+        | column -t
+    echo
+    popd >/dev/null
+}
+
+
+db_update_domain_wp_posts() {
+    headerone 'DEST_HOST: Updating DOMAIN in wp_posts table'
+    pushd ${DEST_WP_DIR} >/dev/null
+    wp db query "
+        SELECT COUNT(*) AS 'post_content___containing__SOURCE_DOMAIN__count'
+        FROM wp_posts
+        WHERE post_content LIKE '%${SOURCE_DOMAIN}%';" \
+        | column -t
+    echo
+    wp db query "
+        UPDATE wp_posts
+        SET post_content = REPLACE(post_content, '${SOURCE_DOMAIN}',
+                                                 '${DEST_DOMAIN}');"
+    wp db query "
+        SELECT COUNT(*) AS 'post_content___containing__DEST_DOMAIN__count'
+        FROM wp_posts
+        WHERE post_content LIKE '%${DEST_DOMAIN}%';" \
+        | column -t
+    echo
+    popd >/dev/null
+}
+
+
 display_dest_host_info() {
     headerone 'DEST_HOST: Info / Connection Validation'
     echo -n "${DKG}LABEL:${RST}               "
@@ -133,6 +224,7 @@ replace_uploads_dir() {
     _msg2=' PULLED_UPLOADS_FILE'
     headerone "${_msg1}${_msg2}"
     echo "${DKG}PULLED_UPLOADS_FILE:${RST} ${PULLED_UPLOADS_FILE}"
+    echo
     headertwo 'Removing old/existing upload data from DEST_UPLOADS_DIR'
     rm -rf "${DEST_UPLOADS_DIR}/"*
     donezo
@@ -151,31 +243,6 @@ replace_uploads_dir() {
 }
 
 
-update_urls_in_database() {
-    headerone 'DEST_HOST: Updating URLs in database'
-    echo "${DKG}SOURCE_URL:${RST}      ${SOURCE_URL}"
-    echo "${DKG}DEST_URL:${RST}        ${DEST_URL}"
-    echo
-    pushd ${DEST_WP_DIR} >/dev/null
-    headertwo 'Updating URLs in wp_options table'
-    wp db query "
-        UPDATE \`wp_options\`
-        SET \`option_value\` = REPLACE( \`option_value\`, '${SOURCE_URL}',
-                                                          '${DEST_URL}' )
-        WHERE \`option_name\` IN ('siteurl', 'home')
-        ;"
-    donezo
-    headertwo 'Updating URLs in wp_posts table'
-    wp db query "
-        UPDATE \`wp_posts\`
-        SET \`post_content\` = REPLACE( \`post_content\`, '${SOURCE_URL}',
-                                                          '${DEST_URL}' )
-        ;"
-    popd >/dev/null
-    donezo
-}
-
-
 #### MAIN #####################################################################
 
 display_dest_host_info
@@ -183,20 +250,9 @@ display_source_host_info
 create_temp_dir
 pull_data
 import_database
-update_urls_in_database
+db_update_domain_wp_options
+db_update_domain_wp_blogs
+db_update_domain_wp_domain_mapping
+db_update_domain_wp_posts
 replace_uploads_dir
 remove_temp_dir
-
-exit
-#### NOTES ####################################################################
-# TODO: update for multisite. note query below:
-cd /var/www/chapters/wp; wp db query 'SELECT * FROM wp_domain_mapping'
-+----+---------+-----------------------------+--------+
-| id | blog_id | domain                      | active |
-+----+---------+-----------------------------+--------+
-|  2 |       2 | au-beta.creativecommons.net |      1 |
-|  3 |       3 | ca-beta.creativecommons.net |      1 |
-|  4 |       4 | ke-beta.creativecommons.net |      1 |
-|  5 |       5 | mx-beta.creativecommons.net |      1 |
-|  6 |       6 | nl-beta.creativecommons.net |      1 |
-+----+---------+-----------------------------+--------+

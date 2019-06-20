@@ -18,7 +18,7 @@ Arguments:
 
 Configuration File Variables:
     DEST_HOST               Host on which to install WordPress data
-    DEST_URL                Site URL of the desintation WordPress
+    DEST_DOMAIN             Domain/Site URL of the destination WordPress
     DEST_UPLOADS_DIR        Absolute path of WordPress uploads directory on
                             destination host (will be destroyed and replaced)
     DEST_WP_DIR             Absolute path of WordPress directory (where to run
@@ -26,7 +26,7 @@ Configuration File Variables:
     BASTION_HOST_REMOTE     Bastion or Jump Host used to connect to
                             SOURCE_HOST_REMOTE
     SOURCE_HOST_REMOTE      Host to pull WordPress data from
-    SOURCE_URL              Site URL of the source WordPress
+    SOURCE_DOMAIN           Domain/Site URL of the source WordPress
     SOURCE_DB_FILE          Absolute path of the database file (.sql.gz)
     SOURCE_UPLOADS_FILE     Absolute path of the uploads file (.tgz)
 "
@@ -69,15 +69,14 @@ display_summary_and_confirm(){
     local _confirm _msg _rand
     local -i _i
     headerone 'WordPress Data Pull Information'
-    echo "${DKG}DEST_HOST:${RST}           ${DEST_HOST}"
-    echo "${DKG}DEST_URL:${RST}            ${DEST_URL}"
+    echo "${DKG}DEST_DOMAIN:${RST}         ${DEST_DOMAIN}"
     echo "${DKG}DEST_UPLOADS_DIR:${RST}    ${DEST_UPLOADS_DIR}"
     echo "${DKG}DEST_WP_DIR:${RST}         ${DEST_WP_DIR}"
     echo
     echo "${DKG}BASTION_HOST_REMOTE:${RST} ${BASTION_HOST_REMOTE}"
     echo
     echo "${DKG}SOURCE_HOST_REMOTE:${RST}  ${SOURCE_HOST_REMOTE}"
-    echo "${DKG}SOURCE_URL:${RST}          ${SOURCE_URL}"
+    echo "${DKG}SOURCE_DOMAIN:${RST}       ${SOURCE_DOMAIN}"
     echo "${DKG}SOURCE_DB_FILE:${RST}      ${SOURCE_DB_FILE}"
     echo "${DKG}SOURCE_UPLOADS_FILE:${RST} ${SOURCE_UPLOADS_FILE}"
     echo
@@ -112,13 +111,13 @@ execute_remote_script() {
     headerone 'DEST_HOST: Executing remote script'
     echo
     ssh -q -t -F"${CONFIG_FILE}" wp-pull "
-        export DEST_URL=\"${DEST_URL}\"
+        export DEST_DOMAIN=\"${DEST_DOMAIN}\"
         export DEST_UPLOADS_DIR=\"${DEST_UPLOADS_DIR}\"
         export DEST_TEMP_DIR=\"${DEST_TEMP_DIR}\"
         export DEST_WP_DIR=\"${DEST_WP_DIR}\"
         export BASTION_HOST_REMOTE=\"${BASTION_HOST_REMOTE}\"
         export SOURCE_HOST_REMOTE=\"${SOURCE_HOST_REMOTE}\"
-        export SOURCE_URL=\"${SOURCE_URL}\"
+        export SOURCE_DOMAIN=\"${SOURCE_DOMAIN}\"
         export SOURCE_DB_FILE=\"${SOURCE_DB_FILE}\"
         export SOURCE_UPLOADS_FILE=\"${SOURCE_UPLOADS_FILE}\"
         bin/wp-pull-remote.sh
@@ -128,8 +127,7 @@ execute_remote_script() {
 
 extract_variables_from_config() {
     local _f="${CONFIG_FILE}"
-    DEST_HOST="$(awk '/^# DEST_HOST:/ {print $3}' "${_f}")"
-    DEST_URL="$(awk '/^# DEST_URL:/ {print $3}' "${_f}")"
+    DEST_DOMAIN="$(awk '/^# DEST_DOMAIN:/ {print $3}' "${_f}")"
     DEST_UPLOADS_DIR="$(awk '/^# DEST_UPLOADS_DIR:/ {print $3}' "${_f}")"
     DEST_UPLOADS_DIR="${DEST_UPLOADS_DIR%/}"
     DEST_TEMP_DIR="$(awk '/^# DEST_TEMP_DIR:/ {print $3}' "${_f}")"
@@ -138,7 +136,7 @@ extract_variables_from_config() {
     DEST_WP_DIR="${DEST_WP_DIR%/}"
     BASTION_HOST_REMOTE="$(awk '/^# BASTION_HOST_REMOTE:/ {print $3}' "${_f}")"
     SOURCE_HOST_REMOTE="$(awk '/^# SOURCE_HOST_REMOTE:/ {print $3}' "${_f}")"
-    SOURCE_URL="$(awk '/^# SOURCE_URL:/ {print $3}' "${_f}")"
+    SOURCE_DOMAIN="$(awk '/^# SOURCE_DOMAIN:/ {print $3}' "${_f}")"
     SOURCE_DB_FILE="$(awk '/^# SOURCE_DB_FILE:/ {print $3}' "${_f}")"
     SOURCE_UPLOADS_FILE="$(awk '/^# SOURCE_UPLOADS_FILE:/ {print $3}' "${_f}")"
 }
