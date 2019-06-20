@@ -9,7 +9,9 @@ trap '_es=${?};
     exit ${_es}' ERR
 
 USAGE="\
-Creative Commons WordPress Data Pull (Destroys and replaces destination data)
+Creative Commons Site Reliability Engineering WordPress Data Pull
+
+[!] Destroys and replaces destination data
 
 Arguments:
     CONFIG_FILE
@@ -85,7 +87,7 @@ display_summary_and_confirm(){
     echo -n '    Please review the information above to ensure it is correct.'
     echo "${RST}"
     echo
-    #confirm_with_random_number
+    confirm_with_random_number
 }
 
 
