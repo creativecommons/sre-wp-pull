@@ -23,12 +23,6 @@ Creative Commons Site Reliability Engineering WordPress Data Pull
 See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 
-## To Do
-
-- WordPress Multisite rename
-- Additional testing/validation
-
-
 ## Assumptions
 
 1. Destination web hosting and WordPress are configured independently (ex. by
