@@ -147,7 +147,7 @@ display_dest_host_info() {
 display_source_host_info() {
     headerone 'SOURCE_HOST: Info / Connection Validation'
     echo -n "${DKG}LABEL:${RST}               "
-    ssh -t -q -oProxyJump=${BASTION_HOST_REMOTE} ${SOURCE_HOST_REMOTE} '
+    ssh -t -q ${SOURCE_HOST_REMOTE} '
         if [[ -f /etc/salt/minion_id ]]
         then
             cat /etc/salt/minion_id

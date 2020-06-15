@@ -1,5 +1,3 @@
-# vim: ft=sshconfig
-#
 # The following are parsed by wp-pull.sh:
 #
 # DEST_DOMAIN: stage.creativecommons.net
@@ -13,12 +11,11 @@
 # SOURCE_UPLOADS_FILE: /var/www/chapters/backup/now/uploads.tgz
 
 
-#pushconfig
 Host bastion-us-east-2
     HostName bastion-us-east-2.creativecommons.org
 
 
-# The wp-pull HostName is the DEST_HOST
+# The wp-pull HostName is the DEST_HOST.
 Host wp-pull
     AddKeysToAgent yes
     ForwardAgent yes
@@ -35,3 +32,6 @@ Host *
     ServerAliveInterval 30
     TCPKeepAlive no
     User USERNAME
+
+
+# vim: ft=sshconfig

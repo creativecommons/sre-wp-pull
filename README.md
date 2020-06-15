@@ -2,7 +2,7 @@
 
 Creative Commons Site Reliability Engineering WordPress Data Pull
 
-**:warning: Destroys and replaces destination data**
+> :warning: **Destroys and replaces destination data**
 
 
 ## Code of Conduct
@@ -14,8 +14,8 @@ Creative Commons Site Reliability Engineering WordPress Data Pull
 > behavior to [conduct@creativecommons.org](mailto:conduct@creativecommons.org)
 > per our [reporting guidelines][reporting_guide].
 
-[code_of_conduct]:https://creativecommons.github.io/community/code-of-conduct/
-[reporting_guide]:https://creativecommons.github.io/community/code-of-conduct/enforcement/
+[code_of_conduct]:https://opensource.creativecommons.org/community/code-of-conduct/
+[reporting_guide]:https://opensource.creativecommons.org/community/code-of-conduct/enforcement/
 
 
 ## Contributing
@@ -25,14 +25,22 @@ See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## Assumptions
 
-1. Destination web hosting and WordPress are configured independently (ex. by
-   SaltStack)
-   - `wp-config.php` is already setup
-   - user is a member of `www-data`
-   - [WP-CLI][wp-cli] is installed on the destination host
-2. WordPress source data was created using
-   [/states/wordpress/files/backup_wordpress.sh][backup] found in the
-   [creativecommons/sre-salt-prime][salt-prime] repository.
+1. `DEST_HOST`:
+   1. Web hosting and WordPress are configured independently (ex. by
+      SaltStack)
+      - `wp-config.php` is already setup
+      - user has appopriate permissions (ex. member of `www-data`)
+      - [WP-CLI][wp-cli] is already installed
+   2. You may need to configure your users `.ssh/config`. For example,
+      `chapters_stage` requires the following entry:
+        ```
+        Host 10.22.10.14
+            ProxyJump 10.22.10.10
+        ```
+2. `SOURCE_HOST`:
+   1. WordPress source data was created using
+      [/states/wordpress/files/backup_wordpress.sh][backup] found in the
+      [creativecommons/sre-salt-prime][salt-prime] repository.
 
 [wp-cli]: https://wp-cli.org/
 [salt-prime]: https://github.com/creativecommons/sre-salt-prime
@@ -41,14 +49,20 @@ See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## Use
 
-1. Optionally, run [`backup_wordpress.sh`][backup] on the source host
-2. Clone this repository
-3. Make a copy of one of the appropriate [`config_examples/`](config_examples/)
-   and replace `FILEPATH` and `USERNAME`
-4. Execute script with config file as only argument. For example:
-    ```shell
-    ./wp-pull.sh chapters__stage
-    ```
+1. `SOURCE_HOST`: *(optional)*
+   - run [`backup_wordpress.sh`][backup] on the
+2. Local/laptop:
+   1. Clone this repository
+   2. Prepare configuration file
+      1. Make a copy of one of the appropriate
+         [`config_examples/`](config_examples/)
+      2. Replace `FILEPATH` and `USERNAME` with your information
+      3. Ensure `SOURCE_DB_FILE` and `SOURCE_UPLOADS_FILE` are valid files on
+         the `SOURCE_HOST`.
+   3. Execute script with config file as only argument. For example:
+        ```shell
+        ./wp-pull.sh chapters__stage
+        ```
 
 
 # Alternatives
