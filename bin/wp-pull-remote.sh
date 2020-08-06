@@ -91,9 +91,13 @@ db_update_domain_wp_options() {
         WHERE option_name IN ('siteurl', 'home');" \
         | column -t
     echo
+    # legacy_ccorgwp__stage
+    # Strip 'blog.' from beginning of domain as that subdomain is now a
+    # redirect
+    local _source_domain="blog.${SOURCE_DOMAIN}"
     wp db query "
         UPDATE wp_options
-        SET option_value = REPLACE(option_value, '${SOURCE_DOMAIN}',
+        SET option_value = REPLACE(option_value, '${_source_domain}',
                                                  '${DEST_DOMAIN}')
         WHERE option_name IN ('siteurl', 'home');"
     wp db query "
@@ -201,7 +205,13 @@ import_database() {
 
 pull_data() {
     headerone 'DEST_HOST: Pulling data from SOURCE_HOST_REMOTE'
-    scp -oProxyJump=${BASTION_HOST_REMOTE} \
+    # legacy_ccorgwp__stage
+    # SOURCE_HOST REMOTE is outside AWS VPC (is not behind the bastion host)
+    #scp -oProxyJump=${BASTION_HOST_REMOTE} \
+    #    ${SOURCE_HOST_REMOTE}:${SOURCE_DB_FILE} \
+    #    ${SOURCE_HOST_REMOTE}:${SOURCE_UPLOADS_FILE} \
+    #    ${TEMP_DIR}/
+    scp \
         ${SOURCE_HOST_REMOTE}:${SOURCE_DB_FILE} \
         ${SOURCE_HOST_REMOTE}:${SOURCE_UPLOADS_FILE} \
         ${TEMP_DIR}/
@@ -247,12 +257,28 @@ replace_uploads_dir() {
 
 display_dest_host_info
 display_source_host_info
-create_temp_dir
+
+# legacy_ccorgwp__stage
+# Using named directories for legacy_ccorgwp__stage migration/sync
+#create_temp_dir
+TEMP_DIR=/var/www/creativecommons/backup/second-sync
+
+# legacy_ccorgwp__stage
+# To debug or update import process, comment out the next line and uncomment
 pull_data
+#PULLED_DB_FILE="${TEMP_DIR}/${SOURCE_DB_FILE##*/}"
+#PULLED_UPLOADS_FILE="${TEMP_DIR}/${SOURCE_UPLOADS_FILE##*/}"
+
 import_database
 db_update_domain_wp_options
-db_update_domain_wp_blogs
-db_update_domain_wp_domain_mapping
+
+# legacy_ccorgwp__stage
+# The source data does not include a wp_blogs or wp_domain_mapping table
+#db_update_domain_wp_blogs
+#db_update_domain_wp_domain_mapping
+
 db_update_domain_wp_posts
 replace_uploads_dir
-remove_temp_dir
+
+# Preserve data
+#remove_temp_dir
