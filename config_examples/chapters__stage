@@ -4,7 +4,6 @@
 # DEST_UPLOADS_DIR: /var/www/chapters/wp-content/uploads
 # DEST_TEMP_DIR: /var/www/chapters
 # DEST_WP_DIR: /var/www/chapters/wp
-# BASTION_HOST_REMOTE: 10.22.10.10
 # SOURCE_HOST_REMOTE: 10.22.10.14
 # SOURCE_DOMAIN: creativecommons.net
 # SOURCE_DB_FILE: /var/www/chapters/backup/now/db.sql.gz
