@@ -41,6 +41,13 @@ create_temp_dir() {
 db_update_domain_wp_blogs() {
     headerone 'DEST_HOST: Updating domain in wp_blogs table'
     pushd ${DEST_WP_DIR} >/dev/null
+    if ! wp db query "SHOW CREATE TABLE wp_blogs" &>/dev/null
+    then
+        echo 'Table wp_blogs does not exist. Skipping.'
+        echo
+        popd >/dev/null
+        return
+    fi
     wp db query "
         SELECT domain AS 'domain__contains__DEST_DOMAIN'
         FROM wp_blogs
@@ -63,6 +70,13 @@ db_update_domain_wp_blogs() {
 db_update_domain_wp_domain_mapping() {
     headerone 'DEST_HOST: Updating domain in wp_domain_mapping table'
     pushd ${DEST_WP_DIR} >/dev/null
+    if ! wp db query "SHOW CREATE TABLE wp_domain_mapping" &>/dev/null
+    then
+        echo 'Table wp_domain_mapping does not exist. Skipping.'
+        echo
+        popd >/dev/null
+        return
+    fi
     wp db query "
         SELECT domain AS 'domain__contains__SOURCE_DOMAIN'
         FROM wp_domain_mapping
@@ -205,14 +219,7 @@ import_database() {
 
 pull_data() {
     headerone 'DEST_HOST: Pulling data from SOURCE_HOST_REMOTE'
-    # legacy_ccorgwp__stage
-    # SOURCE_HOST REMOTE is outside AWS VPC (is not behind the bastion host)
-    #scp -oProxyJump=${BASTION_HOST_REMOTE} \
-    #    ${SOURCE_HOST_REMOTE}:${SOURCE_DB_FILE} \
-    #    ${SOURCE_HOST_REMOTE}:${SOURCE_UPLOADS_FILE} \
-    #    ${TEMP_DIR}/
-    scp \
-        ${SOURCE_HOST_REMOTE}:${SOURCE_DB_FILE} \
+    scp ${SOURCE_HOST_REMOTE}:${SOURCE_DB_FILE} \
         ${SOURCE_HOST_REMOTE}:${SOURCE_UPLOADS_FILE} \
         ${TEMP_DIR}/
     PULLED_DB_FILE="${TEMP_DIR}/${SOURCE_DB_FILE##*/}"
