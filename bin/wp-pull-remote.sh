@@ -278,12 +278,8 @@ pull_data
 
 import_database
 db_update_domain_wp_options
-
-# legacy_ccorgwp__stage
-# The source data does not include a wp_blogs or wp_domain_mapping table
-#db_update_domain_wp_blogs
-#db_update_domain_wp_domain_mapping
-
+db_update_domain_wp_blogs
+db_update_domain_wp_domain_mapping
 db_update_domain_wp_posts
 replace_uploads_dir
 
