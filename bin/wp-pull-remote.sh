@@ -201,8 +201,7 @@ import_database() {
 
 pull_data() {
     headerone 'DEST_HOST: Pulling data from SOURCE_HOST_REMOTE'
-    scp -oProxyJump=${BASTION_HOST_REMOTE} \
-        ${SOURCE_HOST_REMOTE}:${SOURCE_DB_FILE} \
+    scp ${SOURCE_HOST_REMOTE}:${SOURCE_DB_FILE} \
         ${SOURCE_HOST_REMOTE}:${SOURCE_UPLOADS_FILE} \
         ${TEMP_DIR}/
     PULLED_DB_FILE="${TEMP_DIR}/${SOURCE_DB_FILE##*/}"

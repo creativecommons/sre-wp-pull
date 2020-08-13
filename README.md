@@ -31,7 +31,7 @@ See [`CONTRIBUTING.md`](CONTRIBUTING.md).
       - `wp-config.php` is already setup
       - user has appopriate permissions (ex. member of `www-data`)
       - [WP-CLI][wp-cli] is already installed
-   2. You may need to configure your users `.ssh/config`. For example,
+   2. You may need to configure your `.ssh/config`. For example,
       `chapters_stage` requires the following entry:
         ```
         Host 10.22.10.14
@@ -50,7 +50,7 @@ See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 ## Use
 
 1. `SOURCE_HOST`: *(optional)*
-   - run [`backup_wordpress.sh`][backup] on the
+   - run [`backup_wordpress.sh`][backup]
 2. Local/laptop:
    1. Clone this repository
    2. Prepare configuration file
@@ -58,7 +58,7 @@ See [`CONTRIBUTING.md`](CONTRIBUTING.md).
          [`config_examples/`](config_examples/)
       2. Replace `FILEPATH` and `USERNAME` with your information
       3. Ensure `SOURCE_DB_FILE` and `SOURCE_UPLOADS_FILE` are valid files on
-         the `SOURCE_HOST`.
+         the `SOURCE_HOST` (ex. by completing step 1, above)
    3. Execute script with config file as only argument. For example:
         ```shell
         ./wp-pull.sh chapters__stage

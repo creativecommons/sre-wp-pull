@@ -23,8 +23,6 @@ Configuration File Variables:
                             destination host (will be destroyed and replaced)
     DEST_WP_DIR             Absolute path of WordPress directory (where to run
                             WP-CLI from)
-    BASTION_HOST_REMOTE     Bastion or Jump Host used to connect to
-                            SOURCE_HOST_REMOTE
     SOURCE_HOST_REMOTE      Host to pull WordPress data from
     SOURCE_DOMAIN           Domain/Site URL of the source WordPress
     SOURCE_DB_FILE          Absolute path of the database file (.sql.gz)
@@ -73,8 +71,6 @@ display_summary_and_confirm(){
     echo "${DKG}DEST_UPLOADS_DIR:${RST}    ${DEST_UPLOADS_DIR}"
     echo "${DKG}DEST_WP_DIR:${RST}         ${DEST_WP_DIR}"
     echo
-    echo "${DKG}BASTION_HOST_REMOTE:${RST} ${BASTION_HOST_REMOTE}"
-    echo
     echo "${DKG}SOURCE_HOST_REMOTE:${RST}  ${SOURCE_HOST_REMOTE}"
     echo "${DKG}SOURCE_DOMAIN:${RST}       ${SOURCE_DOMAIN}"
     echo "${DKG}SOURCE_DB_FILE:${RST}      ${SOURCE_DB_FILE}"
@@ -115,7 +111,6 @@ execute_remote_script() {
         export DEST_UPLOADS_DIR=\"${DEST_UPLOADS_DIR}\"
         export DEST_TEMP_DIR=\"${DEST_TEMP_DIR}\"
         export DEST_WP_DIR=\"${DEST_WP_DIR}\"
-        export BASTION_HOST_REMOTE=\"${BASTION_HOST_REMOTE}\"
         export SOURCE_HOST_REMOTE=\"${SOURCE_HOST_REMOTE}\"
         export SOURCE_DOMAIN=\"${SOURCE_DOMAIN}\"
         export SOURCE_DB_FILE=\"${SOURCE_DB_FILE}\"
@@ -134,7 +129,6 @@ extract_variables_from_config() {
     DEST_TEMP_DIR="${DEST_TEMP_DIR%/}"
     DEST_WP_DIR="$(awk '/^# DEST_WP_DIR:/ {print $3}' "${_f}")"
     DEST_WP_DIR="${DEST_WP_DIR%/}"
-    BASTION_HOST_REMOTE="$(awk '/^# BASTION_HOST_REMOTE:/ {print $3}' "${_f}")"
     SOURCE_HOST_REMOTE="$(awk '/^# SOURCE_HOST_REMOTE:/ {print $3}' "${_f}")"
     SOURCE_DOMAIN="$(awk '/^# SOURCE_DOMAIN:/ {print $3}' "${_f}")"
     SOURCE_DB_FILE="$(awk '/^# SOURCE_DB_FILE:/ {print $3}' "${_f}")"
